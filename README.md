@@ -2,7 +2,7 @@
 
 ## Description
 
-Timers Manager is a lightweight JavaScript library for managing timers and intervals. It provides an intuitive API for adding, starting, pausing, resuming, and removing timers.
+Timers Manager is a lightweight JavaScript application for managing timers and intervals. It provides an intuitive API for adding, starting, pausing, resuming, and removing timers.
 
 ## Quickstart
 

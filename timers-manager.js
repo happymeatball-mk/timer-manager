@@ -4,16 +4,26 @@ class TimersManager {
 
     constructor() {
         this.queue = [];
+        this.logs = [];
+    }
+
+    async _log(item, value1, value2, result) {
+        this.logs.push({
+            name: item.timerData.name,
+            in:  [value1, value2],
+            out: result,
+            created: new Date(),
+        })
     }
 
     add(data, arg1 = null, arg2 = null) {
         if (this.#isStart === true) {
-            throw new Error('Cannot add timers after TimeManager has started');
+            throw new Error("Cannot add timers after TimeManager has started");
         }
 
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].timerData.name == data.name) {
-                console.log(this.queue[i].timerData.name, "уже в очереди"); 
+                console.log(this.queue[i].timerData.name, "Timer already in queue"); 
                 return
             }
         }
@@ -25,16 +35,18 @@ class TimersManager {
             value2: arg2
         });
 
-        
-
         return this
     }
 
     remove(item) {
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].timerData.name === item.name) {
-                clearTimeout(this.queue[i].id)
-                this.queue.splice(i, 1)
+                if (item.timerData.interval === true) {
+                    clearInterval(this.queue[i].id);
+                } else {
+                    clearTimeout(this.queue[i].id);
+                }
+                this.queue.splice(i, 1);
             }
         }
         return this
@@ -44,12 +56,12 @@ class TimersManager {
         //checking module
 
         for (let i = 0; i < this.queue.length; i++) {
-            if (typeof this.queue[i].timerData.name !== typeof "string" || this.queue[i].timerData.name === '') {
+            if (typeof this.queue[i].timerData.name !== typeof 'string' || this.queue[i].timerData.name === '') {
                 console.log(this.queue[i].timerData.name, "wrong name type"); 
                 return
             }
 
-            if (typeof this.queue[i].timerData.delay !== typeof 1) {
+            if (typeof this.queue[i].timerData.delay !== 'number') {
                 console.log(this.queue[i].timerData.name,"wrong delay type" ); 
                 return
             }
@@ -59,52 +71,54 @@ class TimersManager {
                 return
             }
 
-            if (typeof this.queue[i].timerData.interval !== typeof true) {
+            if (typeof this.queue[i].timerData.interval !== 'boolean') {
                 console.log(this.queue[i].timerData.name, "wrong interval type"); 
                 return
             }
 
-            if (typeof this.queue[i].timerData.job !== typeof (() => {})) {
+            if (typeof this.queue[i].timerData.job !== 'function') {
                 console.log(this.queue[i].timerData.name, "wrong job type"); 
                 return
             }
         }
 
+        this.queue.forEach((item) => {
 
-        this.queue.forEach((item) => {if (item.timerData.interval === true) {
-                item.id = setInterval(
-                    () => {
-                        const result = item.timerData.job(item.value1, item.value2);
-                        if (result === undefined) {return};
-                        console.log(result)
-                    }, 
-                item.timerData.delay)} 
-
-                else {
-                    item.id = setTimeout(
-                    () => {
-                        const result = item.timerData.job(item.value1, item.value2);
-                        if (result === undefined) {return};
-                        console.log(result)
-                    }, 
-                    item.timerData.delay)
-                }
+            const callback = async () => {
+                const result = await item.timerData.job(item.value1, item.value2);
+                await this._log(item, item.value1, item.value2, result);
+                if (result === undefined) {return};
             }
-        )    
-        
+
+            if (item.timerData.interval === true) {
+                item.id = setInterval(callback, item.timerData.delay)
+            } else {
+                item.id = setTimeout(callback, item.timerData.delay)
+            }
+        })    
+
         this.#isStart = true;
     }
 
     stop() {
         this.queue.forEach(
-            (item) => clearTimeout(item.id)
+            (item) => {if (item.timerData.interval === true) {
+                    clearInterval(item.id)
+                } else {
+                    clearTimeout(item.id)
+                }
+            }
         )
     }
 
     pause(item) {
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].timerData.name === item.name) {
-                clearTimeout(this.queue[i].id)
+                if (item.interval === true) {
+                    clearInterval(item.id)
+                } else {
+                    clearTimeout(item.id)
+                }
             }
         }
     }
@@ -125,49 +139,11 @@ class TimersManager {
         }
     }
 
+    print() {
+        setTimeout(() => {
+            console.log(this.logs)}, 10000
+        )
+    }
 }
 
-const manager = new TimersManager()
-
-const t1 = {
-    name: 't1',
-    delay: 1000,
-    interval: false,
-    job: () => { console.log('t1') } 
-};
-
-const t2 = {
-    name: 't2',
-    delay: 2000,
-    interval: false,
-    job: (a, b) => a + b 
-};
-
-const t3 = {
-    name: 't3',
-    delay: 5000,
-    interval: false,
-    job: (a, b) => a * b
-};
-
-const t4 = {
-    name: 't4',
-    delay: 1000,
-    interval: true,
-    job: () => { console.log('t4') } 
-};
-
-
-
-manager.add(t1).add(t2, 2, 3).add(t3, 4, 5).add(t4);
-//manager.remove(t2)
-
-manager.start();
-//manager.stop()
-//manager.add(t4);
-//manager.pause(t1);
-//manager.resume(t2);
-
-//console.log(manager)
-
-
+export default TimersManager;

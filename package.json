@@ -1,9 +1,11 @@
 {
   "name": "timers-manager",
   "version": "1.0.0",
-  "description": "",
+  "type": "module",
+  "description": "A simple timer management application using JavaScript classes to handle timers and intervals.",
   "main": "index.js",
   "scripts": {
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -11,7 +13,7 @@
     "url": "git+https://github.com/happymeatball-mk/timer-manager.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "happymeatball-mk",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/happymeatball-mk/timer-manager/issues"
