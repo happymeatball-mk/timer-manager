@@ -6,7 +6,7 @@ const t1 = {
     name: 't1',
     delay: 1000,
     interval: false,
-    job: () => { console.log('t1') } 
+    job: () => console.log('t1')
 };
 
 const t2 = {
@@ -27,10 +27,19 @@ const t4 = {
     name: 't4',
     delay: 1000,
     interval: false,
-    job: () => { console.log('t4') } 
+    job: () => {throw new Error('We have a problem!')}
+};
+
+const t5 = {
+    name: 't5',
+    delay: 1000,
+    interval: false,
+    job: n => n 
 };
 
 
-manager.add(t1).add(t2, 2, 3).add(t3, 4, 5).add(t4);
+manager.add(t1).add(t2, 2, 3).add(t3, 4, 5).add(t4).add(t5, 1);
 manager.start();
-manager.print()
+setTimeout(() => {
+    manager.print();
+}, 6000)
