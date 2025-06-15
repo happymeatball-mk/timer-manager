@@ -1,6 +1,7 @@
 class TimersManager {
 
     #isStart = false;
+    timeout = 10000;
 
     constructor() {
         this.queue = [];
@@ -64,6 +65,17 @@ class TimersManager {
         
     }
 
+    timersTimeout () {
+        let maxdelay = 0;
+        for (let i = 0; i < this.queue.length; i++) {
+            if (this.queue[i].timerData.delay > maxdelay) {
+                maxdelay = this.queue[i].timerData.delay;
+            }
+        }
+        maxdelay += this.timeout;
+        setTimeout(() => this.stop(), maxdelay);
+    }
+
     add(data, ...args) {
         if (this.#isStart === true) {
             throw new Error("Cannot add timers after TimeManager has started");
@@ -97,7 +109,8 @@ class TimersManager {
         return this
     }
     
-    start() {    
+    start() {   
+        this.timersTimeout(); 
         this.queue.forEach((item) => {
             if (item.timerData.interval === true) {
                 item.id = setInterval(() => this.callback(item), item.timerData.delay);
@@ -146,7 +159,7 @@ class TimersManager {
     }
 
     print() {
-        console.log(this.logs)
+        setTimeout(() => console.log(this.logs), this.timeout)
     }
 }
 

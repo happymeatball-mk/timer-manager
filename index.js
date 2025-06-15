@@ -40,6 +40,4 @@ const t5 = {
 
 manager.add(t1).add(t2, 2, 3).add(t3, 4, 5).add(t4).add(t5, 1);
 manager.start();
-setTimeout(() => {
-    manager.print();
-}, 6000)
+manager.print();
