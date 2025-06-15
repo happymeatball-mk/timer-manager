@@ -69,9 +69,11 @@ const t5 = {
 manager.add(t1).add(t2, 2, 3).add(t3, 4, 5).add(t4).add(t5, 1);
 manager.start();
 manager.print();
+```
 
-## Expected Output
+### Expected Output
 
+```js
 [
   {
     name: 't1',
@@ -109,3 +111,4 @@ manager.print();
     created: 2025-06-15T18:40:04.632Z
   }
 ]
+```
