@@ -24,6 +24,8 @@ node index.js
 
 ## Example Code
 
+```js
+
 import TimersManager from './timers-manager.js'
 
 const manager = new TimersManager()
