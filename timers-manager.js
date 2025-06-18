@@ -77,7 +77,7 @@ class TimersManager {
     }
 
     add(data, ...args) {
-        if (this.#isStart === true) {
+        if (this.#isStart) {
             throw new Error("Cannot add timers after TimeManager has started");
         }
 
@@ -98,7 +98,7 @@ class TimersManager {
     remove(item) {
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].timerData.name === item.name) {
-                if (item.timerData.interval === true) {
+                if (item.timerData.interval) {
                     clearInterval(this.queue[i].id);
                 } else {
                     clearTimeout(this.queue[i].id);
@@ -112,7 +112,7 @@ class TimersManager {
     start() {   
         this.timersTimeout(); 
         this.queue.forEach((item) => {
-            if (item.timerData.interval === true) {
+            if (item.timerData.interval) {
                 item.id = setInterval(() => this.callback(item), item.timerData.delay);
             } else {
                 item.id = setTimeout(() => this.callback(item), item.timerData.delay);
@@ -125,7 +125,7 @@ class TimersManager {
     stop() {
         this.queue.forEach(
             (item) => {
-                if (item.timerData.interval === true) {
+                if (item.timerData.interval) {
                     clearInterval(item.id);
                 } else {
                     clearTimeout(item.id);
@@ -137,7 +137,7 @@ class TimersManager {
     pause(item) {
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].timerData.name === item.name) {
-                if (this.queue[i].timerData.interval === true) {
+                if (this.queue[i].timerData.interval) {
                     clearInterval(this.queue[i].id);
                 } else {
                     clearTimeout(this.queue[i].id);
@@ -149,7 +149,7 @@ class TimersManager {
     resume(item) {
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].timerData.name === item.name) {
-                if (this.queue[i].timerData.interval === true) {
+                if (this.queue[i].timerData.interval) {
                     item.id = setInterval(() => this.callback(this.queue[i]), this.queue[i].timerData.delay);
                 } else {
                     item.id = setTimeout(() => this.callback(this.queue[i]), this.queue[i].timerData.delay);
